@@ -6,17 +6,14 @@ const ProfileSchema = Schema({
     type: Schema.Types.ObjectId,
     ref: 'User'
   },
-  avatar: {
+  bio: {
     type: String
   },
   location: {
     type: String
   },
-  bio: {
+  website: {
     type: String
-  },
-  birthdate: {
-    type: Date
   }
 });
 
