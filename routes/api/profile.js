@@ -8,7 +8,8 @@ const validateProfileInput = require('../../validation/profile');
 
 // Load profile and user models
 const Profile = require('../../models/Profile'),
-      User = require('../../models/User');
+      User = require('../../models/User'),
+      Tweet = require('../../models/Tweet');
 
 // @route GET /api/profile/test
 // @desc Test profile route
@@ -115,7 +116,7 @@ router.post('/', passport.authenticate('jwt', { session: false }), (req, res) =>
       if (profile) {
         // Update
         Profile.findOneAndUpdate(
-          { user: req.user.id },
+          { user: req.user.id }, 
           { $set: profileFields },
           { new: true }
         ).then(profile => res.json(profile));

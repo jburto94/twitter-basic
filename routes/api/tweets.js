@@ -91,10 +91,16 @@ router.post('/like/:id', passport.authenticate('jwt', { session: false }), (req,
 
           tweet.likes.unshift({ user: req.user.id });
 
-          tweet.save()
-            .then(tweet => res.json(tweet))
+          // Add liked tweet to profile liked tweets
+          profile.liked.unshift(tweet);
+
+          profile.save()
+            .then(() => {
+              tweet.save()
+                .then(tweet => res.json(tweet));
+            })
         })
-        .catch(e => res.status(404).json( { tweetnotfound: 'Tweet not found' }));
+        .catch(e => res.status(404).json({ tweetnotfound: 'Tweet not found' }));
     });
 });
 
@@ -110,7 +116,8 @@ router.post('/unlike/:id', passport.authenticate('jwt', { session: false }), (re
             return res.status(400).json({ notliked: 'You have not yet liked this tweet' });
           }
 
-          //Get removal index
+          // Remove from tweet's likes
+          // Get removal index
           const removalIndex = tweet.likes
             .map(item => item.user.toString())
             .indexOf(req.user.id);
@@ -118,8 +125,20 @@ router.post('/unlike/:id', passport.authenticate('jwt', { session: false }), (re
           // Splice out of the array
           tweet.likes.splice(removalIndex, 1);
 
-          tweet.save()
-            .then(tweet => res.json(tweet));
+          // Remove from profile's liked
+          // Get removal index
+          const likedIndex = profile.liked
+            .map(item => item._id.toString())
+            .indexOf(tweet._id);
+          
+          profile.liked.splice(likedIndex, 1);
+
+          profile.save()
+            .then(() => {
+              tweet.save()
+                .then(tweet => res.json(tweet));
+            });
+          
         })
         .catch(e => res.status(404).json( { tweetnotfound: 'Tweet not found' }));
     });

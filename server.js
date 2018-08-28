@@ -4,7 +4,6 @@ const express = require('express'),
       passport = require('passport'),
       path = require('path');
 
-
 const users = require('./routes/api/users'),
       profile = require('./routes/api/profile'),
       tweets = require('./routes/api/tweets');

@@ -8,8 +8,10 @@ module.exports = function validateProfileInput(data) {
     errors.bio = 'Handle must be under 150 characters';
   }
 
-  if(!Validator.isURL(data.website)) {
-    errors.website = 'Website is invalld';
+  if(!Validator.isEmpty(data.website)) {
+    if(!Validator.isURL(data.website)) {
+      errors.website = 'Website is invalld';
+    }
   }
 
   // Checks for errors and returns isValid if there are none
